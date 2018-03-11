@@ -3,17 +3,17 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://your-site.com/categories/</loc>
+    <loc>http://patrick-holl.com/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://your-site.com/</loc>
+    <loc>http://patrick-holl.com/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://your-site.com/tags/</loc>
+    <loc>http://patrick-holl.com/tags/</loc>
     <priority>0</priority>
   </url>
   
