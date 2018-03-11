@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+    <base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="Patrick Holl">
+
+<meta name="description" content="">
+
+<title>Download real-time crypto market data from CoinMarketCap.com into a CSV file with midas</title>
+<meta name="generator" content="Hugo 0.37.1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/pojoaque.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+<link  href="http://patrick-holl.com/css/theme.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="page-container container-fluid">
+<div class="col-md-3 menu">
+    <nav class="col-md-3">
+    <h3 class="home-link"><a href="http://patrick-holl.com">Root</a></h3>
+    <div id="last-posts" class="open">
+        <h3 data-open="last-posts">Padho - Most recent posts</h3>
+        <ul>
+            
+            <li><a href="http://patrick-holl.com/posts/download-real-time-crypto-market-data-from-coinmarketcapcom-into-a-csv-file-with-midas/">Download real-time crypto market data from CoinMarketCap.com into a CSV file with midas</a></li>
+            
+        </ul>
+    </div>
+
+    
+
+    
+</nav>
+
+</div>
+<div class="col-md-9 content">
+
+<h1>Download real-time crypto market data from CoinMarketCap.com into a CSV file with midas</h1>
+<h4>Published 03-10-2018 21:23:38</h4>
+
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="kendo5731"></a>
+<script>!function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+    if (!d.getElementById(id)) {
+        js = d.createElement(s);
+        js.id = id;
+        js.src = p + '://platform.twitter.com/widgets.js';
+        fjs.parentNode.insertBefore(js, fjs);
+    }
+}(document, 'script', 'twitter-wjs');</script>
+
+<div class="fb-share-button" data-href="http://patrick-holl.com/posts/download-real-time-crypto-market-data-from-coinmarketcapcom-into-a-csv-file-with-midas/" data-layout="button"></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en-US/sdk.js#xfbml=1&version=v2.5";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<article>
+    
+
+<p>Sometimes it could be handy to have a CSV file of your crypto portfolio with the current prices provided by CoinMarketcCap.com. In this post, I’ll show you how to get this easily done by using an open source tool called <a href="https://github.com/midas-science/midas">midas</a>.</p>
+
+<h3 id="preparation">Preparation</h3>
+
+<p>Before we can start setting up our CSV portfolio, we have to take care of some ingredients. The first thing we need to do is to create a CSV file that contains the names of the coins we want to have in our portfolio file. It is very important that the names are spelled correctly since this will be the input for the CoinMarketCap API later. Secondly, we have to understand the CoinMarketCap API and what it returns. Thirdly, we have to set up a midas job that downloads and synchronizes the CoinMarketCap data into our CSV.</p>
+
+<p><br>
+<br></p>
+
+<h3 id="the-csv-base-file">The CSV base file</h3>
+
+<p>This file will represent our crypto portfolio. The only thing that we have to do, is to fill it with the names of the cryptocurrencies that we want to include in our portfolio.</p>
+
+<p><strong>Example:</strong>
+<div style="background: #051F27;padding: 10px;">
+    currency <br>
+    bitcoin<br>
+    ethereum<br>
+    monero<br>
+    ripple
+</div></p>
+
+<p>The first line <em>currency</em> is treated as a header row and will be ignored, each other row must be a correctly spelled currency name.</p>
+
+<p><br>
+<br></p>
+
+<h3 id="coinmarketcap-api">CoinMarketCap API</h3>
+
+<p>CoinMarketCap provides several publicly accessible APIs for free (cheers!). For our little task, we will use the <em>Ticker</em> endpoint for a specific currency. The concrete endpoint looks like the following:</p>
+
+<div style="background: #051F27;padding: 10px;">
+    https://api.coinmarketcap.com/v1/ticker/{NAME_OF_CURRENCY}
+</div>
+
+<p>Let&rsquo;s assume that we want to get the ticker data of Bitcoin. The specific call would look like this (just copy and paste it into your browser):</p>
+
+<div style="background: #051F27;padding: 10px;">
+    https://api.coinmarketcap.com/v1/ticker/bitcoin
+</div>
+
+<p>As a result, we get a JSON response that contains all the information that we need.</p>
+
+<pre><code class="language-json">[
+    {
+        &quot;id&quot;: &quot;bitcoin&quot;,
+        &quot;name&quot;: &quot;Bitcoin&quot;,
+        &quot;symbol&quot;: &quot;BTC&quot;,
+        &quot;rank&quot;: &quot;1&quot;,
+        &quot;price_usd&quot;: &quot;573.137&quot;,
+        &quot;price_btc&quot;: &quot;1.0&quot;,
+        &quot;24h_volume_usd&quot;: &quot;72855700.0&quot;,
+        &quot;market_cap_usd&quot;: &quot;9080883500.0&quot;,
+        &quot;available_supply&quot;: &quot;15844176.0&quot;,
+        &quot;total_supply&quot;: &quot;15844176.0&quot;,
+        &quot;max_supply&quot;: &quot;21000000.0&quot;,
+        &quot;percent_change_1h&quot;: &quot;0.04&quot;,
+        &quot;percent_change_24h&quot;: &quot;-0.3&quot;,
+        &quot;percent_change_7d&quot;: &quot;-0.57&quot;,
+        &quot;last_updated&quot;: &quot;1472762067&quot;
+    }
+] 
+</code></pre>
+
+<p><br>
+<br></p>
+
+<h3 id="midas">midas</h3>
+
+<p>midas is an open source tool for fusing and combining data from multiple sources. It will take care of getting the data from the CSV file and filling it with the information from CoinMarketCap.</p>
+
+<ol>
+<li>Install midas via <span style="background:#051F27; padding: 2px">npm install midas-core -g</span></li>
+<li>Create a new folder and put your CSV file there</li>
+<li>Download or clone the CoinMarketCap enricher for midas from Github: <a href="https://github.com/midas-science/enricher-coinmarketcap">https://github.com/midas-science/enricher-coinmarketcap</a></li>
+<li>Create a new file called <span style="background:#051F27; padding: 2px">portfolio-sync.json</span></li>
+<li>Fill it with the following configuration and ajust the paths:</li>
+</ol>
+
+<pre><code class="language-json">{
+	&quot;source&quot;: {
+		&quot;csv&quot;: {
+			&quot;path&quot;: &quot;ABSOLUTE_PATH_TO_YOUR_CSV_PORTFOLIO/portfolio.csv&quot;,
+			&quot;delimiter&quot;: &quot;,&quot;
+		}
+	},
+	&quot;target&quot;: {
+		&quot;csv&quot;: {
+			&quot;path&quot;: &quot;ABSOLUTE_PATH_TO_YOUR_CSV_PORTFOLIO/portfolio.csv&quot;,
+			&quot;delimiter&quot;: &quot;,&quot;
+		}
+	},
+	&quot;enrichers&quot;: [
+		{
+			&quot;name&quot;: &quot;CoinMarketCap&quot;,
+			&quot;path&quot;: &quot;ABSOLUTE_PATH_TO_THE_DOWNLOADED_OR_CLONED_ENRICHER/enricher-coinmarketcap&quot;,
+			&quot;config&quot;: {
+				&quot;input_parameter&quot;: &quot;$..currency&quot;,
+				&quot;target_property&quot;: &quot;cmc_data&quot;
+			}
+		}
+	],
+	&quot;name&quot;: &quot;CoinMarketCap_EnrichmentProcess&quot;
+}
+</code></pre>
+
+<p>In the last step, start the process via <span style="background:#051F27; padding: 2px">midas enrich -c &ldquo;ABSOLUTE_PATH_TO_YOUR_PORTFOLIO_SYNC/portfolio-sync.json&rdquo;</span></p>
+
+<p>That&rsquo;s it, just wait a few seconds until everything is downloaded and then your portfolio file should be updated with the most recent prices and market data!</p>
+
+</article>
+
+
+
+</div>
+</div>
+<script src="http://patrick-holl.com/js/theme.min.js" type="text/javascript"></script>
+
+
+</body>
+</html>
+
