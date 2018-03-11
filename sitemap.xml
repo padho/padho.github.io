@@ -3,29 +3,29 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://patrick-holl.com/posts/download-real-time-crypto-market-data-from-coinmarketcapcom-into-a-csv-file-with-midas/</loc>
+    <loc>https://patrick-holl.com/posts/download-real-time-crypto-market-data-from-coinmarketcapcom-into-a-csv-file-with-midas/</loc>
     <lastmod>2018-03-10T21:23:38+01:00</lastmod>
   </url>
   
   <url>
-    <loc>http://patrick-holl.com/categories/</loc>
+    <loc>https://patrick-holl.com/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://patrick-holl.com/</loc>
-    <lastmod>2018-03-10T21:23:38+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://patrick-holl.com/posts/</loc>
+    <loc>https://patrick-holl.com/</loc>
     <lastmod>2018-03-10T21:23:38+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://patrick-holl.com/tags/</loc>
+    <loc>https://patrick-holl.com/posts/</loc>
+    <lastmod>2018-03-10T21:23:38+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://patrick-holl.com/tags/</loc>
     <priority>0</priority>
   </url>
   
